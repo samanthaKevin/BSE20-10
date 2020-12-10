@@ -1,0 +1,30 @@
+{% extends 'bases.html' %}
+{% load static %}
+
+
+{% block content %}
+
+<div class="main-content">
+  <section class="section">
+    <div class="section-body">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h4>Sales Report Brief</h4>
+            </div>
+            <div class="card-body">
+              <div id="linechart1" style="width: 100%; height: 500px; margin: 0 auto; margin-bottom: 30px;"></div>
+              <div class="table-responsive">
+                {{table_data|safe}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+{% endblock content %}
