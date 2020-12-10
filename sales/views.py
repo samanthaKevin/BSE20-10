@@ -1,17 +1,24 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 import pandas as pd
+import datetime
 from django_pandas.io import read_frame
 from sales.models import *
 
 
-# read data      
-df = read_frame(Income.objects.all())
+# read data   
+try:
+    df = read_frame(Income.objects.all())
 
-df["Sales"] = df['Revenue']
+    df["Sales"] = df['Revenue']
 
-df['Months'] = pd.to_datetime(df['ReceivedDate']).dt.month_name(locale='English')
-df['Years'] = df['Year']
+    df['Months'] = pd.to_datetime(df['ReceivedDate']).dt.month_name(locale='English')
+    df['Years'] = df['Year']
+except Exception as e:
+    df = pd.DataFrame()
+    df['Sales'] = 0
+    df['Months'] = datetime.datetime.now().month
+    df['Years'] = datetime.datetime.now().year
 
 @login_required(login_url='/admin/login/?next=/')
 def index(request):
