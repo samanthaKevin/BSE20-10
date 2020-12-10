@@ -1,1 +1,1 @@
-web: gunicorn bse20-10.wsgi --log-file -
+web: gunicorn salesAnalysis.wsgi --log-file -
