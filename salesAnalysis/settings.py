@@ -79,10 +79,10 @@ WSGI_APPLICATION = 'salesAnalysis.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'FFARS',
-        'USER': 'postgres',
-        'PASSWORD': '123',
-        'HOST': '127.0.0.1',
+        'NAME': 'dae4smst1datv8',
+        'USER': 'gepbxlttmbahgg',
+        'PASSWORD': 'ae6f591ca3af37f867ffcf004f53a4fba67280623272896411db9baa20df5374',
+        'HOST': 'ec2-3-224-188-122.compute-1.amazonaws.com',
     }
 }
 
