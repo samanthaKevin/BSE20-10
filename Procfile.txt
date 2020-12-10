@@ -1,0 +1,1 @@
+web: gunicorn bse20-10.wsgi --log-file -
