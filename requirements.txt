@@ -4,11 +4,17 @@ Django==3.1.4
 django-heroku==0.3.1
 django-pandas==0.6.2
 gunicorn==20.0.4
+joblib==0.17.0
 numpy==1.19.4
 pandas==1.1.5
 psycopg2==2.8.6
 python-dateutil==2.8.1
 pytz==2020.4
+scikit-learn==0.23.2
+scipy==1.5.4
 six==1.15.0
+sklearn==0.0
 sqlparse==0.4.1
+threadpoolctl==2.1.0
+Werkzeug==1.0.1
 whitenoise==5.2.0

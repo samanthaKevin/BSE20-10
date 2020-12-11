@@ -1,0 +1,34 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Predict Farm Financial Risk</title>
+        <link href="css/bootstrap.css" rel="stylesheet" />
+        <!--<link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheets' type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheets' type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheets' type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheets' type="text/css">
+        <link href='{{url}}' rel='stylesheets' type="text/css">-->
+    </head>
+    <body>
+        <div class="Login">
+            <h1>Predict Risk</h1>
+            <h2>{{pred}}</h2>
+            <!-- Form to enter new data for predictions -->
+            <form action="/predict" method="POST">
+                <input type="number" name="PurchasePrice" placeholder="PurchasePrice" required="required" /> <br>
+                <input type="number" name="Quantity" placeholder="Quantity" required="required" /> <br>
+                <input type="number" name="Feed" placeholder="Feed" required="required" /> <br>
+                <input type="number" name="Labour" placeholder="Labour" required="required" /> <br>
+                <input type="number" name="Vaccination" placeholder="Vaccination" required="required" /> <br>
+                <input type="number" name="Dewormers" placeholder="Dewormers" required="required" /> <br>
+                <input type="number" name="Acaricides" placeholder="Acaricides" required="required" /> <br>
+                <input type="number" name="Buildings" placeholder="Buildings" required="required" /> <br>
+                <input type="number" name="Water" placeholder="Water" required="required" /> <br>
+                <input type="number" name="SalePrice" placeholder="SalePrice" required="required" /> <br>
+                <input type="Income" name="Income" placeholder="Income" required="required" /> <br>
+
+                <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
+            </form>
+        </div>
+    </body>
+</html>
