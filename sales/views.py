@@ -25,7 +25,8 @@ regressor.fit(X,Y)
 CSV_UPLOADS = "sales/temp"
 #app.config["ALLOWED_CSV_EXTENSIONS"] = ["CSV"]
 csvEXT = "CSV"
-ValidColumns = ['Name', 'Quantity', 'Unit Cost', 'Total Cost', 'Expense group', 'Year']
+ValidExpenseColumns = ['Name', 'Quantity', 'Unit Cost', 'Total Cost', 'Expense group', 'Year']
+ValidIncomeColumns = ['Revenue', 'Year', 'Date Received']
 
 def allowed_files(filename):
     if not "." in filename:
@@ -61,7 +62,6 @@ def riskassessment(request):
     context = {
         'financial_data': final,
     }
-    print(final)
     return render(request, "riskassessment.html", context)
 
 @login_required(login_url='admin/login/?next=/')
@@ -85,7 +85,7 @@ def importExpenseCSV(request):
                 index = 0
                 for col_name in df.columns:
                         
-                    if col_name == ValidColumns[index]:
+                    if col_name == ValidExpenseColumns[index]:
                         index = index + 1
                         continue
                     else:
@@ -138,22 +138,61 @@ def importExpenseCSV(request):
 @login_required(login_url='admin/login/?next=/')
 def importIncomeCSV(request):
     if request.method == "POST":
-        if request.files:
-            mycsv = request.files["fileToUpload"]
-            if mycsv.filename == "":
-                print("No filename")
-                return redirect(request.url)
+        mycsv = request.FILES["fileToUpload"]
+        url = ""
+        fs = FileSystemStorage()
+        sid = transaction.savepoint()
+        try:
+            if mycsv.name == "":
+                raise Exception("No filename") 
 
-            if allowed_files(mycsv.filename):
-                filename = secure_filename(mycsv.filename)
-                mycsv.save(os.path.join(CSV_UPLOADS, filename))
-                print("CSV saved")
-                return redirect(request.url)
+            if allowed_files(mycsv.name):
+                #filename = secure_filename(mycsv.name)
+                name = fs.save(mycsv.name, mycsv)
+
+                url = fs.url(name)
+
+                df = pd.read_csv(url[1:])
+                    
+                index = 0
+                for col_name in df.columns:
+                        
+                    if col_name == ValidIncomeColumns[index]:
+                        index = index + 1
+                        continue
+                    else:
+                        raise Exception("Invalid Column Name "+col_name) 
+
+                #models.SaveExpense(df.values)
+                arr = df.values
+
+                sid = transaction.savepoint()
+                for i in range(len(arr)) : 
+                    income = Income(
+                    Revenue = arr[i,0],
+                    Year = arr[i,1],
+                    ReceivedDate = arr[i,2],
+                    )
+                    income.save()
+                transaction.savepoint_commit(sid)
+                context = {
+                'error': "Records successfully inserted",
+                }
+                return render(request, 'importIncome.html', context)
             else:
-                print("That file extension is not allowed")
-                return redirect(request.url)
-
-    return redirect("importIncome.html")
+                raise Exception("That file extension is not allowed") 
+            
+        except Exception as e:
+            transaction.savepoint_rollback(sid)
+            msg = str(e)
+            context = {
+                'error': msg,
+            }
+            return render(request, 'importIncome.html', context)
+        finally:
+            fs.delete(mycsv.name)
+            
+    return render(request, "importIncome.html")
 
 @login_required(login_url='admin/login/?next=/')
 def predictPrice(request):
