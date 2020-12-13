@@ -90,6 +90,7 @@ def importExpenseCSV(request):
 
                 #models.SaveExpense(df.values)
                 arr = df.values
+                sid = transaction.savepoint()
                 for i in range(len(arr)) : 
                     mydata = Expenses.objects.all().filter(Year = arr[i,5])
                     origTotalCost = 0
@@ -109,10 +110,8 @@ def importExpenseCSV(request):
                     Year = arr[i,5],
                     TotalCost = arr[i,3] + origTotalCost
                     )
-                sid = transaction.savepoint()
-
-                expenseDetails.save()
-                expenses.save()
+                    expenseDetails.save()
+                    expenses.save()
                 transaction.savepoint_commit(sid)
                 context = {
                 'error': "Records successfully inserted",
