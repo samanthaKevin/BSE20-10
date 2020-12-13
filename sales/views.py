@@ -1,10 +1,11 @@
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.shortcuts import render
-from django.shortcuts import redirect
 import pandas as pd
 import datetime
 import numpy as np
 import csv
+import os.path
 from django_pandas.io import read_frame
 from sales.models import *
 from sklearn.linear_model import LinearRegression
@@ -25,6 +26,11 @@ CSV_UPLOADS = "sales/temp"
 csvEXT = "CSV"
 ValidColumns = ['Name', 'Quantity', 'Unit Cost', 'Total Cost', 'Expense group', 'Year']
 
+def handle_uploaded_file(f):
+    with open(CSV_UPLOADS+"/"+f.name, 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+
 def allowed_files(filename):
     if not "." in filename:
         return False
@@ -38,15 +44,15 @@ def allowed_files(filename):
 
 @login_required(login_url='admin/login/?next=/')
 def home(request):
-    return redirect("indexf.html")
+    return render(request, "indexf.html")
 
 @login_required(login_url='admin/login/?next=/')
 def weather(request):
-    return redirect("weather.html")
+    return render(request, "weather.html")
 
 @login_required(login_url='admin/login/?next=/')
 def prices(request):
-    return redirect("prices.html")
+    return render(request, "prices.html")
 
 @login_required(login_url='admin/login/?next=/')
 def riskassessment(request):
@@ -60,20 +66,21 @@ def riskassessment(request):
     return redirect("riskassessment.html", financial_data=dfData, myLength = len(dfData))
 
 @login_required(login_url='admin/login/?next=/')
+@transaction.atomic
 def importExpenseCSV(request):
     if request.method == "POST":
-        if request.files:
-            mycsv = request.files["fileToUpload"]
+        if request.FILES['fileToUpload']:
+            mycsv = request.FILES["fileToUpload"]
             try:
-                if mycsv.filename == "":
+                if mycsv.name == "":
                     raise Exception("No filename") 
 
-                if allowed_files(mycsv.filename):
-                    filename = secure_filename(mycsv.filename)
+                if allowed_files(mycsv.name):
+                    #filename = secure_filename(mycsv.name)
 
-                    mycsv.save(os.path.join(CSV_UPLOADS, filename))
-                    url = CSV_UPLOADS +"/"+filename
-                    df = pd.read_csv(url)
+                    handle_uploaded_file(mycsv)
+
+                    df = pd.read_csv(CSV_UPLOADS)
                     
                     index = 0
                     for col_name in df.columns:
@@ -105,20 +112,27 @@ def importExpenseCSV(request):
                         Year = arr[i,5],
                         TotalCost = arr[i,3] + origTotalCost
                         )
-                        db.session.add(expenseDetails)
-                        db.session.merge(expense)
-                        db.session.commit()
 
-                    return render_template('importExpense.html', error="Records successfully inserted")
+                    with transaction.atomic():
+                        ExpenseDetails.save()
+                        Expenses.save()
+                    context = {
+                    'error': "Records successfully inserted",
+                    }
+                    return render(request, 'importExpense.html', context)
                 else:
                     raise Exception("That file extension is not allowed") 
 
             except Exception as e:
-                db.session.rollback()
+                #if os.path.exists(default_storage.url(mycsv.name)):
+                #default_storage.delete(mycsv.name) 
                 msg = str(e)
-                return redirect('importExpense.html', error=msg)
+                context = {
+                    'error': msg,
+                }
+                return render(request, 'importExpense.html', context)
 
-    return redirect("importExpense.html")
+    return render(request, "importExpense.html")
 
 @login_required(login_url='admin/login/?next=/')
 def importIncomeCSV(request):
@@ -142,18 +156,21 @@ def importIncomeCSV(request):
 
 @login_required(login_url='admin/login/?next=/')
 def predictPrice(request):
-    int_features = [x for x in request.form.values()]
+    int_features = [request.POST.get('Year'), request.POST.get('ItemName'), request.POST.get('District')]
     final = np.array(int_features)
     data_unseen = pd.DataFrame([final])
     prediction = regressor.predict(data_unseen)
-    return redirect('prices.html', pred='Expected Market Price in UGX per Kg will be {}'.format(prediction))
+    context = {
+        'pred': 'Expected Market Price in UGX per Kg will be {}'.format(prediction),
+    }
+    return render(request, 'prices.html', context)
 
 @login_required(login_url='admin/login/?next=/')
 def predict(request):
     df = pd.read_csv("sales/CSVfiles/TestTemplate.csv")
 
     #MyArray = df.values
-    Kampala = df2[df2.Name == 'KAMPALA']
+    Kampala = df[df.Name == 'KAMPALA']
     Kampala = Kampala[['Year','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']]
 
     X = Kampala[['Year']].values
@@ -162,11 +179,14 @@ def predict(request):
     mlp = MLPRegressor()
     mlp.fit(X, Y)
 
-    int_features = [x for x in request.form.values()]
+    int_features = [request.POST.get('Year')]
     final = np.array(int_features)
     data_unseen = pd.DataFrame([final])
     prediction = mlp.predict(data_unseen)
-    return redirect('weather.html', pred='Expected Rainfall in mm will be {}'.format(prediction))
+    context = {
+        'pred': 'Expected Rainfall in mm will be {}'.format(prediction),
+    }
+    return render(request, 'weather.html', context)
 
 # read data   
 try:

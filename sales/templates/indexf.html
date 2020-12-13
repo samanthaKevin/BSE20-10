@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -7,7 +9,7 @@
         <meta name="description" content="" />
         <meta name="author" content="" />
         <title>Farm Financial Analysis and Risk Assessment</title>
-        <link href="{{url_for('static', filename = 'css/styles.css')}}" rel="stylesheet" />
+        <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
     </head>
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -46,7 +48,7 @@
                                 Dashboard
                             </a>
                             <div class="sb-sidenav-menu-heading">PREDICTIONS</div>
-                            <a class="nav-link collapsed" href="/prices" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                            <a class="nav-link collapsed" href="{% url 'prices' %}" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Prices
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
@@ -57,12 +59,12 @@
                                     <a class="nav-link" href="layout-sidenav-light.html">Light Sidenav</a>
                                 </nav>
                             </div>
-                            <a class="nav-link collapsed" href="/weather" data-toggle="collapse" data-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
+                            <a class="nav-link collapsed" href="{% url 'weather' %}" data-toggle="collapse" data-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
                                 <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
                                 Weather
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
-                            <a class="nav-link collapsed" href="/riskassessment" data-toggle="collapse" data-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
+                            <a class="nav-link collapsed" href="{% url 'riskassessment' %}" data-toggle="collapse" data-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
                                 <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
                                 Risk Assessment
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
@@ -94,11 +96,11 @@
                                 </nav>
                             </div>
                             <div class="sb-sidenav-menu-heading">Import Finances</div>
-                            <a class="nav-link" href="/importExpense">
+                            <a class="nav-link" href="{% url 'importExpense' %}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                                 Expenses
                             </a>
-                            <a class="nav-link" href="/importIncome">
+                            <a class="nav-link" href="{% url 'importIncome' %}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 Income
                             </a>
@@ -146,6 +148,6 @@
             </div>
         </div>
         
-        <script src="{{url_for('static', filename = 'js/scripts.js')}}"></script>
+        <script src=""></script>
     </body>
 </html>
