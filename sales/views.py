@@ -62,77 +62,75 @@ def riskassessment(request):
     return redirect("riskassessment.html", financial_data=dfData, myLength = len(dfData))
 
 @login_required(login_url='admin/login/?next=/')
-@transaction.atomic
 def importExpenseCSV(request):
     if request.method == "POST":
-        if request.FILES['fileToUpload']:
-            mycsv = request.FILES["fileToUpload"]
-            url = ""
-            fs = FileSystemStorage()
-            try:
-                if mycsv.name == "":
-                    raise Exception("No filename") 
+        mycsv = request.FILES["fileToUpload"]
+        url = ""
+        fs = FileSystemStorage()
+        try:
+            if mycsv.name == "":
+                raise Exception("No filename") 
 
-                if allowed_files(mycsv.name):
-                    #filename = secure_filename(mycsv.name)
-                    name = fs.save(mycsv.name, mycsv)
+            if allowed_files(mycsv.name):
+                #filename = secure_filename(mycsv.name)
+                name = fs.save(mycsv.name, mycsv)
 
-                    url = fs.url(name)
+                url = fs.url(name)
 
-                    df = pd.read_csv(url[1:])
+                df = pd.read_csv(url[1:])
                     
-                    index = 0
-                    for col_name in df.columns:
+                index = 0
+                for col_name in df.columns:
                         
-                        if col_name == ValidColumns[index]:
-                            index = index + 1
-                            continue
-                        else:
-                            raise Exception("Invalid Column Name "+col_name) 
+                    if col_name == ValidColumns[index]:
+                        index = index + 1
+                        continue
+                    else:
+                        raise Exception("Invalid Column Name "+col_name) 
 
-                    #models.SaveExpense(df.values)
-                    arr = df.values
-                    for i in range(len(arr)) : 
-                        mydata = models.Expenses.query.filter_by(Year = arr[i,5]).all()
-                        origTotalCost = 0
+                #models.SaveExpense(df.values)
+                arr = df.values
+                for i in range(len(arr)) : 
+                    mydata = Expenses.objects.all().filter(Year = arr[i,5])
+                    origTotalCost = 0
 
-                        if len(mydata) > 0:
-                            origTotalCost = mydata[0].TotalCost
+                    if len(mydata) > 0:
+                        origTotalCost = mydata[0].TotalCost
                         
-                        expenseDetails = models.ExpenseDetails(
-                        ExpenseName = arr[i,0],
-                        Quantity = arr[i,1],
-                        UnitCost = arr[i,2],
-                        TotalCost = arr[i,3],
-                        ExpenseGroup = arr[i,4],
-                        Year = arr[i,5]
-                        )
-                        expense = models.Expenses(
-                        Year = arr[i,5],
-                        TotalCost = arr[i,3] + origTotalCost
-                        )
+                    expenseDetails = ExpenseDetails(
+                    ExpenseName = arr[i,0],
+                    Quantity = arr[i,1],
+                    UnitCost = arr[i,2],
+                    TotalCost = arr[i,3],
+                    ExpenseGroup = arr[i,4],
+                    Year = arr[i,5]
+                    )
+                    expenses = Expenses(
+                    Year = arr[i,5],
+                    TotalCost = arr[i,3] + origTotalCost
+                    )
+                sid = transaction.savepoint()
 
-                    with transaction.atomic():
-                        ExpenseDetails.save()
-                        Expenses.save()
-                    context = {
-                    'error': "Records successfully inserted",
-                    }
-                    return render(request, 'importExpense.html', context)
-                else:
-                    raise Exception("That file extension is not allowed") 
-
-            except Exception as e:
-                #if os.path.exists(default_storage.url(mycsv.name)):
-                #default_storage.delete(mycsv.name) 
-                msg = str(e)
+                expenseDetails.save()
+                expenses.save()
+                transaction.savepoint_commit(sid)
                 context = {
-                    'error': msg,
+                'error': "Records successfully inserted",
                 }
                 return render(request, 'importExpense.html', context)
-            finally:
-                fs.delete(mycsv.name)
-
+            else:
+                raise Exception("That file extension is not allowed") 
+            
+        except Exception as e:
+            transaction.savepoint_rollback(sid)
+            msg = str(e)
+            context = {
+                'error': msg,
+            }
+            return render(request, 'importExpense.html', context)
+        finally:
+            fs.delete(mycsv.name)
+            
     return render(request, "importExpense.html")
 
 @login_required(login_url='admin/login/?next=/')
