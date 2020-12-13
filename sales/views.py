@@ -39,10 +39,6 @@ def allowed_files(filename):
         return False
 
 @login_required(login_url='admin/login/?next=/')
-def home(request):
-    return render(request, "indexf.html")
-
-@login_required(login_url='admin/login/?next=/')
 def weather(request):
     return render(request, "weather.html")
 
@@ -52,14 +48,21 @@ def prices(request):
 
 @login_required(login_url='admin/login/?next=/')
 def riskassessment(request):
-    mydata = models.Expenses.query.all()
-    dfData = pd.read_sql(models.Expenses.query.statement, db.session.bind)
+    #mydata = models.Expenses.query.all()
+    dfData = read_frame(Expenses.objects.all())
     dfData['ItemName'] = 1
     dfData['District'] = 9
     predictiveData = dfData[['Year','ItemName','District']].values
     prediction = regressor.predict(predictiveData)
     dfData['PredictedPrices'] = prediction
-    return redirect("riskassessment.html", financial_data=dfData, myLength = len(dfData))
+    dfData['Income'] = 450 * dfData['PredictedPrices']
+    dfData['Profit'] = dfData['Income'] - dfData['TotalCost']
+    final = dfData[['Year','TotalCost','PredictedPrices', 'Income', 'Profit']]
+    context = {
+        'financial_data': final,
+    }
+    print(final)
+    return render(request, "riskassessment.html", context)
 
 @login_required(login_url='admin/login/?next=/')
 def importExpenseCSV(request):
