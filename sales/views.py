@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.core.files.storage import FileSystemStorage
 from django.db import transaction
 from django.shortcuts import render
 import pandas as pd
@@ -25,11 +26,6 @@ CSV_UPLOADS = "sales/temp"
 #app.config["ALLOWED_CSV_EXTENSIONS"] = ["CSV"]
 csvEXT = "CSV"
 ValidColumns = ['Name', 'Quantity', 'Unit Cost', 'Total Cost', 'Expense group', 'Year']
-
-def handle_uploaded_file(f):
-    with open(CSV_UPLOADS+"/"+f.name, 'wb+') as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)
 
 def allowed_files(filename):
     if not "." in filename:
@@ -71,16 +67,19 @@ def importExpenseCSV(request):
     if request.method == "POST":
         if request.FILES['fileToUpload']:
             mycsv = request.FILES["fileToUpload"]
+            url = ""
+            fs = FileSystemStorage()
             try:
                 if mycsv.name == "":
                     raise Exception("No filename") 
 
                 if allowed_files(mycsv.name):
                     #filename = secure_filename(mycsv.name)
+                    name = fs.save(mycsv.name, mycsv)
 
-                    handle_uploaded_file(mycsv)
+                    url = fs.url(name)
 
-                    df = pd.read_csv(CSV_UPLOADS)
+                    df = pd.read_csv(url[1:])
                     
                     index = 0
                     for col_name in df.columns:
@@ -131,6 +130,8 @@ def importExpenseCSV(request):
                     'error': msg,
                 }
                 return render(request, 'importExpense.html', context)
+            finally:
+                fs.delete(mycsv.name)
 
     return render(request, "importExpense.html")
 
