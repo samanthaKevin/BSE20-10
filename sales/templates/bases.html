@@ -195,19 +195,8 @@
               </ul>
             </li>
             <li class="menu-header">Forecasts</li>
-            <li class="dropdown">
-              <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="shopping-cart"></i><span>Prices</span></a>
-              <ul class="dropdown-menu">
-                <li><a class="nav-link" href="{% url 'prices' %}">Price Predictions</a></li>
-              </ul>
-            </li>
-            <li class="dropdown">
-              <a href="#" class="menu-toggle nav-link has-dropdown"><i
-                  data-feather="cloud-drizzle"></i><span>Weather</span></a>
-              <ul class="dropdown-menu">
-                <li><a class="nav-link" href="{% url 'weather' %}">Weather Predictions</a></li>
-              </ul>
-            </li>
+            <li><a class="nav-link" href="{% url 'prices' %}">Price Predictions</a></li>
+            <li><a class="nav-link" href="{% url 'weather' %}">Weather Predictions</a></li>
             <li><a class="nav-link" href="{% url 'riskassessment' %}"><i data-feather="dollar-sign"></i><span>Risk Assessment</span></a></li>
             <li class="dropdown">
               <a href="#" class="menu-toggle nav-link has-dropdown"><i
