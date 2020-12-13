@@ -228,22 +228,15 @@ def predict(request):
     }
     return render(request, 'weather.html', context)
 
-# read data   
-try:
-    df = read_frame(Income.objects.all())
+# read data 
 
+@login_required(login_url='admin/login/?next=/')
+def index(request):
+    df = read_frame(Income.objects.all())
     df["Sales"] = df['Revenue']
 
     df['Months'] = pd.to_datetime(df['ReceivedDate']).dt.month_name(locale='English')
     df['Years'] = df['Year']
-except Exception as e:
-    df = pd.DataFrame()
-    df['Sales'] = 0
-    df['Months'] = datetime.datetime.now().month
-    df['Years'] = datetime.datetime.now().year
-
-@login_required(login_url='admin/login/?next=/')
-def index(request):
 
     rs_bar = df.groupby("Years")["Sales"].agg("sum")
     categoriesbar = list(rs_bar.index)
