@@ -235,7 +235,7 @@ def index(request):
     df = read_frame(Income.objects.all())
     df["Sales"] = df['Revenue']
 
-    df['Months'] = pd.to_datetime(df['ReceivedDate']).dt.month_name(locale='English')
+    df['Months'] = pd.to_datetime(df['ReceivedDate']).dt.month_name()
     df['Years'] = df['Year']
 
     rs_bar = df.groupby("Years")["Sales"].agg("sum")
@@ -281,7 +281,11 @@ def index(request):
 
 @login_required(login_url='admin/login/?next=/')
 def salesreport(request):
-    
+    df = read_frame(Income.objects.all())
+    df["Sales"] = df['Revenue']
+
+    df['Months'] = pd.to_datetime(df['ReceivedDate']).dt.month_name()
+    df['Years'] = df['Year']
     rs = df.groupby("Months")["Sales"].agg("sum")
     # print(rs)
 
