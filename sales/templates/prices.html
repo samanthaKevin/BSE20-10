@@ -18,53 +18,27 @@
                                   </ol>
                               </div>
                               <div class="card-body">
-                                  <form action="{% url 'predictPrice' %}" method="POST">{% csrf_token %}                                    
+                                  <form action="{% url 'predictPrice' %}" method="POST" class="form-group">{% csrf_token %}                               
                                        <label for="Year">Year</label>
-                                       <select name="Year">
+                                       <select name="Year" class="col-sm-5 form-control">
                                            <option>2017</option>
                                            <option>2018</option>
                                            <option>2019</option>
                                            <option>2020</option>
+                                           <option>2021</option>
+                                           <option>2022</option>
                                        </select><br>
                        
                                        <label for="ItemName">Item</label>
-                                       <select name="ItemName" required="required">
-                                           <option value=1>Beans - Retail</option>
-                                           <option value=2>Beans - Wholesale</option>
-                                           <option value=3>Cassava flour - Retail</option>
-                                           <option value=4>Cassava flour - Wholesale</option>
-                                           <option value=5>Maize - Retail</option>
-                                           <option value=6>Maize - Wholesale</option>
-                                           <option value=7>Maize (white) – Retail </option>
-                                           <option value=8>Maize flour – Retail </option>
-                                           <option value=9>Millet – Retail</option>
-                                           <option value=10>Oil (vegetable) – Retail</option>
-                                           <option value=11>Plantains – Retail </option>
-                                           <option value=12>Plantains – Wholesale </option>
-                                           <option value=13>Rice – Wholesale</option>
-                                           <option value=14>Sorghum – Retail</option>
+                                       <select name="ItemName" required="required" disabled class="col-sm-5 form-control"> 
+                                           <option value="Coffee">Coffee</option>
                                        </select><br>
                        
-                                       <label for="District">District</label>
-                                       <select name="District" required="required">
-                                           <option value=1>Abim</option>
-                                           <option value=2>Amudat</option>
-                                           <option value=3>Busia</option>
-                                           <option value=4>Gulu</option>
-                                           <option value=5>Iganga</option>
-                                           <option value=6>Jinja</option>
-                                           <option value=7>Kaabong</option>
-                                           <option value=8>Kabale</option>
-                                           <option value=9>Kampala</option>
-                                           <option value=10>Kotido</option>
-                                           <option value=11>Kween</option>
-                                           <option value=12>Kyankwanzi</option>
-                                           <option value=13>Lira</option>
-                                           <option value=14>Masindi</option>
-                                           <option value=15>Mbale</option>
-                                           <option value=16>Mbarara</option>
-                                           <option value=17>Nakapiripirit</option>
-                                           <option value=18>Soroti</option>
+                                       <label for="Type">Type</label>
+                                       <select name="Type" required="required" class="col-sm-5 form-control">
+                                           <option value="ROBUSTA KIBOKO">ROBUSTA KIBOKO</option>
+                                           <option value="ROBUSTA FAQ">ROBUSTA FAQ</option>
+                                           <option value="ARABICA PARCHMENT">ARABICA PARCHMENT</option>
                                        </select><br>
                        
                                        <button type="submit" class="btn btn-primary">Predict</button>

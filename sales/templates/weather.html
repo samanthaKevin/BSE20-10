@@ -18,13 +18,30 @@
                                   </ol>
                               </div>
                               <div class="card-body">
-                                  <form action="{% url 'predictWeather' %}" method="POST">{% csrf_token %}                                    
+                                  <form action="{% url 'predictWeather' %}" method="POST" class="form-group">{% csrf_token %}                                    
                                        <label for="Year">Year</label>
-                                       <select name="Year">
+                                       <select name="Year" class="col-sm-5 form-control">
                                            <option>2017</option>
                                            <option>2018</option>
                                            <option>2019</option>
                                            <option>2020</option>
+                                           <option>2021</option>
+                                            <option>2022</option>
+                                        </select></br></br>
+
+                                        <label for="District">District</label>
+                                       <select name="District" class="col-sm-5 form-control">
+                                           <option value="KAMPALA">KAMPALA</option>
+                                           <option value="KASESE">KASESE</option>
+                                           <option value="ENTEBBE">ENTEBBE</option>
+                                           <option value="MASINDI">MASINDI</option>
+                                           <option value="MBARARA">MBARARA</option>
+                                           <option value="SOROTI">SOROTI</option>
+                                           <option value="TORORO">TORORO</option>
+                                           <option value="GULU">GULU</option>
+                                           <option value="ARUA">ARUA</option>
+                                           <option value="KABALE">KABALE</option>
+                                           <option value="JINJA">JINJA</option>
                                         </select></br></br>
                                         
                                        <button type="submit" class="btn btn-primary">Predict</button>

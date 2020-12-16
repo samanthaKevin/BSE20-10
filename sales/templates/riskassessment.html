@@ -16,11 +16,34 @@
                             </div>
 
                             <div class="card-body">
+                                <div style="color: red;">{{pred}}</div>
+                                <form action="{% url 'riskassessment' %}" method="POST" class="form-group">{% csrf_token %}                               
+                                    <label for="Year">Year to Predict </label>
+                                    <select name="Year" class="col-sm-2">
+                                        <option>2017</option>
+                                        <option>2018</option>
+                                        <option>2019</option>
+                                        <option>2020</option>
+                                        <option>2021</option>
+                                        <option>2022</option>
+                                    </select>	&nbsp;
+
+                                    <label for="Type">Type  </label>
+                                    <select name="Type" required="required" class="col-sm-3">
+                                        <option value="ROBUSTA KIBOKO">ROBUSTA KIBOKO</option>
+                                        <option value="ROBUSTA FAQ">ROBUSTA FAQ</option>
+                                        <option value="ARABICA PARCHMENT">ARABICA PARCHMENT</option>
+                                    </select><br>
+                    
+                                    <button type="submit" class="btn btn-primary">Load</button>
+                                </form>
+
                                 <div class="table-responsive">
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
-                                                <th>Year</th>
+                                                <th>Year to Predict</th>
+                                                <th>Coffee Type</th>
                                                 <th>Last year's total Expense</th>
                                                 <th>Predicted selling price</th>
                                                 <th>Predicted Income</th>
@@ -31,7 +54,8 @@
                                         <tbody>
                                             {% for finance in financial_data.itertuples %}
                                                     <tr>
-                                                        <td>{{finance.Year}}</td>
+                                                        <td>{{finance.PredYear}}</td>
+                                                        <td>{{finance.Type}}</td>
                                                         <td>{{finance.TotalCost}}</td>
                                                         <td>{{finance.PredictedPrices}}</td>
                                                         <td>{{ finance.Income}}</td>

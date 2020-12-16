@@ -14,14 +14,6 @@ from sklearn.neural_network import MLPRegressor
 from sklearn.model_selection import train_test_split
 from werkzeug.utils import secure_filename
 
-df2 = pd.read_csv("sales/CSVfiles/KampalaBeansAv.csv")
-
-X = df2[['Year','ItemName','District']].values
-Y = df2['AvPrice'].values
-
-regressor = LinearRegression()
-regressor.fit(X,Y)
-
 CSV_UPLOADS = "sales/temp"
 #app.config["ALLOWED_CSV_EXTENSIONS"] = ["CSV"]
 csvEXT = "CSV"
@@ -49,20 +41,53 @@ def prices(request):
 
 @login_required(login_url='admin/login/?next=/')
 def riskassessment(request):
-    #mydata = models.Expenses.query.all()
-    dfData = read_frame(Expenses.objects.all())
-    dfData['ItemName'] = 1
-    dfData['District'] = 9
-    predictiveData = dfData[['Year','ItemName','District']].values
-    prediction = regressor.predict(predictiveData)
-    dfData['PredictedPrices'] = prediction
-    dfData['Income'] = 450 * dfData['PredictedPrices']
-    dfData['Profit'] = dfData['Income'] - dfData['TotalCost']
-    final = dfData[['Year','TotalCost','PredictedPrices', 'Income', 'Profit']]
-    context = {
-        'financial_data': final,
-    }
-    return render(request, "riskassessment.html", context)
+    if request.method == "POST":
+        df2 = pd.read_csv("sales/CSVfiles/CoffeeDataset.csv")
+
+        X = df2[['Year']].values
+        try:
+            if request.POST.get('Type') == "ROBUSTA KIBOKO":
+                Y = df2['ROBUSTA KIBOKO'].values
+            elif request.POST.get('Type') == "ROBUSTA FAQ":
+                Y = df2['ROBUSTA FAQ'].values
+            elif request.POST.get('Type') == "ARABICA PARCHMENT":
+                Y = df2['ARABICA PARCHMENT'].values
+            else:
+                raise Exception("Unknown coffee type")
+        except Exception as e:
+            msg = str(e)
+            context = {
+                'pred': msg,
+            }
+            return render(request, 'prices.html', context)
+
+        regressor = LinearRegression()
+        regressor.fit(X,Y)
+        previousYear = int(request.POST.get('Year')) - 1
+
+        dfData = read_frame(Expenses.objects.all().filter(Year = previousYear))
+
+        predictiveData = dfData[['Year']].values
+
+        try:
+            prediction = regressor.predict(predictiveData)
+        except Exception as e:
+            prediction = 0
+        
+        dfData['PredictedPrices'] = prediction
+        dfData['Income'] = 450 * dfData['PredictedPrices']
+        dfData['Profit'] = dfData['Income'] - dfData['TotalCost']
+        dfData['PredYear'] = request.POST.get('Year')
+        dfData['Type'] = request.POST.get('Type') 
+        final = dfData[['PredYear','Type','Year','TotalCost','PredictedPrices', 'Income', 'Profit']]
+        context = {
+            'financial_data': final,
+        }
+        return render(request, "riskassessment.html", context)
+        #mydata = models.Expenses.query.all()
+
+    return render(request, "riskassessment.html")
+    
 
 @login_required(login_url='admin/login/?next=/')
 def importExpenseCSV(request):
@@ -196,9 +221,32 @@ def importIncomeCSV(request):
 
 @login_required(login_url='admin/login/?next=/')
 def predictPrice(request):
-    int_features = [request.POST.get('Year'), request.POST.get('ItemName'), request.POST.get('District')]
+    int_features = [request.POST.get('Year')]
     final = np.array(int_features)
     data_unseen = pd.DataFrame([final])
+
+    df2 = pd.read_csv("sales/CSVfiles/CoffeeDataset.csv")
+
+    X = df2[['Year']].values
+    try:
+        if request.POST.get('Type') == "ROBUSTA KIBOKO":
+            Y = df2['ROBUSTA KIBOKO'].values
+        elif request.POST.get('Type') == "ROBUSTA FAQ":
+            Y = df2['ROBUSTA FAQ'].values
+        elif request.POST.get('Type') == "ARABICA PARCHMENT":
+            Y = df2['ARABICA PARCHMENT'].values
+        else:
+            raise Exception("Unknown coffee type")
+    except Exception as e:
+        msg = str(e)
+        context = {
+            'pred': msg,
+        }
+        return render(request, 'prices.html', context)
+
+    regressor = LinearRegression()
+    regressor.fit(X,Y)
+
     prediction = regressor.predict(data_unseen)
     context = {
         'pred': 'Expected Market Price in UGX per Kg will be {}'.format(prediction),
@@ -210,11 +258,10 @@ def predict(request):
     df = pd.read_csv("sales/CSVfiles/TestTemplate.csv")
 
     #MyArray = df.values
-    Kampala = df[df.Name == 'KAMPALA']
-    Kampala = Kampala[['Year','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']]
+    selectedDistrict = df[df.Name == request.POST.get('District')]
 
-    X = Kampala[['Year']].values
-    Y = Kampala[['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']].values
+    X = selectedDistrict[['Year']].values
+    Y = selectedDistrict[['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']].values
 
     mlp = MLPRegressor()
     mlp.fit(X, Y)
