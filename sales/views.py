@@ -75,10 +75,12 @@ def riskassessment(request):
             prediction = 0
         
         dfData['PredictedPrices'] = prediction
+        dfData['PredictedPrices'] = dfData['PredictedPrices'].round(1)
         dfData['Income'] = 450 * dfData['PredictedPrices']
+        dfData['Income'] = dfData['Income'].round(1)
         dfData['Profit'] = dfData['Income'] - dfData['TotalCost']
         dfData['PredYear'] = request.POST.get('Year')
-        dfData['Type'] = request.POST.get('Type') 
+        dfData['Type'] = request.POST.get('Type')
         final = dfData[['PredYear','Type','Year','TotalCost','PredictedPrices', 'Income', 'Profit']]
         context = {
             'financial_data': final,
@@ -248,8 +250,9 @@ def predictPrice(request):
     regressor.fit(X,Y)
 
     prediction = regressor.predict(data_unseen)
+    prediction = np.round_(prediction, 1)
     context = {
-        'pred': 'Expected Market Price in UGX per Kg will be {}'.format(prediction),
+        'pred': 'Expected Market Price in UGX per Kg will be {:,}'.format(prediction[0]),
     }
     return render(request, 'prices.html', context)
 
@@ -263,15 +266,29 @@ def predict(request):
     X = selectedDistrict[['Year']].values
     Y = selectedDistrict[['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']].values
 
-    mlp = MLPRegressor()
+    mlp = MLPRegressor(random_state=0)
     mlp.fit(X, Y)
 
     int_features = [request.POST.get('Year')]
     final = np.array(int_features)
     data_unseen = pd.DataFrame([final])
     prediction = mlp.predict(data_unseen)
+    prediction = prediction.astype(int)
     context = {
-        'pred': 'Expected Rainfall in mm will be {}'.format(prediction),
+        'Year': request.POST.get('Year'),
+        'District': request.POST.get('District'),
+        'Jan': prediction[0,0],
+        'Feb': prediction[0,1],
+        'Mar': prediction[0,2],
+        'Apr': prediction[0,3],
+        'May': prediction[0,4],
+        'Jun': prediction[0,5],
+        'Jul': prediction[0,6],
+        'Aug': prediction[0,7],
+        'Sep': prediction[0,8],
+        'Oct': prediction[0,9],
+        'Nov': prediction[0,10],
+        'Dec': prediction[0,11],
     }
     return render(request, 'weather.html', context)
 
@@ -280,7 +297,7 @@ def predict(request):
 @login_required(login_url='admin/login/?next=/')
 def index(request):
     df = read_frame(Income.objects.all())
-    df["Sales"] = df['Revenue']
+    df["Sales"] = df['Revenue'].round(1)
 
     df['Months'] = pd.to_datetime(df['ReceivedDate']).dt.month_name()
     df['Years'] = df['Year']
@@ -294,7 +311,7 @@ def index(request):
     total_sum = '{:,}'.format(total_sum)
     
     #Average Sales total
-    total_average = df['Sales'].mean()
+    total_average = (df['Sales'].mean()).round(1)
     total_average = '{:,}'.format(total_average)
     
     #Highest Sales

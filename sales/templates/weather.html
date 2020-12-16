@@ -27,7 +27,7 @@
                                            <option>2020</option>
                                            <option>2021</option>
                                             <option>2022</option>
-                                        </select></br></br>
+                                        </select></br>
 
                                         <label for="District">District</label>
                                        <select name="District" class="col-sm-5 form-control">
@@ -42,10 +42,51 @@
                                            <option value="ARUA">ARUA</option>
                                            <option value="KABALE">KABALE</option>
                                            <option value="JINJA">JINJA</option>
-                                        </select></br></br>
+                                        </select></br>
                                         
                                        <button type="submit" class="btn btn-primary">Predict</button>
                                    </form>
+                                   <h5>Expected Rainfall in mm</h5>
+                                   <div class="table-responsive">
+                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>Year</th>
+                                                <th>District</th>
+                                                <th>January</th>
+                                                <th>February</th>
+                                                <th>March</th>
+                                                <th>April</th>
+                                                <th>May</th>
+                                                <th>June</th>
+                                                <th>July</th>
+                                                <th>August</th>
+                                                <th>September</th>
+                                                <th>October</th>
+                                                <th>November</th>
+                                                <th>December</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                    <tr>
+                                                        <td>{{Year}}</td>
+                                                        <td>{{District}}</td>
+                                                        <td>{{Jan}}</td>
+                                                        <td>{{Feb}}</td>
+                                                        <td>{{Mar}}</td>
+                                                        <td>{{Apr}}</td>
+                                                        <td>{{May}}</td>
+                                                        <td>{{Jun}}</td>
+                                                        <td>{{Jul}}</td>
+                                                        <td>{{Aug}}</td>
+                                                        <td>{{Sep}}</td>
+                                                        <td>{{Oct}}</td>
+                                                        <td>{{Nov}}</td>
+                                                        <td>{{Dec}}</td>
+                                                    </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                               </div>
                           </div>
                       </div>
