@@ -31,7 +31,7 @@
             <li><a href="#" class="nav-link nav-link-lg fullscreen-btn">
                 <i data-feather="maximize"></i>
               </a></li>
-            <li>
+            <!-- <li>
               <form class="form-inline mr-auto">
                 <div class="search-element">
                   <input class="form-control" type="search" placeholder="Search" aria-label="Search" data-width="200">
@@ -40,11 +40,13 @@
                   </button>
                 </div>
               </form>
-            </li>
+            </li> -->
+            <li></li>
           </ul>
+          <h6 style="margin: auto; color:#fff;">FFARAS Dashboard</h6>
         </div>
         <ul class="navbar-nav navbar-right">
-          <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
+          <!-- <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
               class="nav-link nav-link-lg message-toggle"><i data-feather="mail"></i>
               <span class="badge headerBadge1">
                 6 </span> </a>
@@ -153,21 +155,22 @@
                 <a href="#">View All <i class="fas fa-chevron-right"></i></a>
               </div>
             </div>
-          </li>
+          </li> -->
           <li class="dropdown"><a href="#" data-toggle="dropdown"
-              class="nav-link dropdown-toggle nav-link-lg nav-link-user"> <img alt="image" src="{% static 'assets/img/user.png'%}"
-                class="user-img-radious-style"> <span class="d-sm-none d-lg-inline-block"></span></a>
+              class="nav-link dropdown-toggle nav-link-lg nav-link-user"> 
+               <i class="fas fa-user" style="font-size: 24px;"></i> 
+                <span class="d-sm-none d-lg-inline-block"></span></a>
             <div class="dropdown-menu dropdown-menu-right pullDown">
-              <div class="dropdown-title">Hello Sarah Smith</div>
-              <a href="profile.html" class="dropdown-item has-icon"> <i class="far
+              <div class="dropdown-title">Hello, {{user.username}}</div>
+              <!-- <a href="profile.html" class="dropdown-item has-icon"> <i class="far
 										fa-user"></i> Profile
               </a> <a href="timeline.html" class="dropdown-item has-icon"> <i class="fas fa-bolt"></i>
                 Activities
               </a> <a href="#" class="dropdown-item has-icon"> <i class="fas fa-cog"></i>
                 Settings
-              </a>
+              </a> -->
               <div class="dropdown-divider"></div>
-              <a href="auth-login.html" class="dropdown-item has-icon text-danger"> <i class="fas fa-sign-out-alt"></i>
+              <a href="{% url 'logout' %}" class="dropdown-item has-icon text-danger"> <i class="fas fa-sign-out-alt"></i>
                 Logout
               </a>
             </div>
@@ -190,7 +193,7 @@
               <a href="#" class="menu-toggle nav-link has-dropdown"><i
                   data-feather="briefcase"></i><span>Sales Analysis</span></a>
               <ul class="dropdown-menu">
-                <li><a class="nav-link" href="">Yearly Breakdown</a></li>
+                <li><a class="nav-link" href="/">Yearly Breakdown</a></li>
                 <li><a class="nav-link" href="{% url 'salesreport' %}">Monthly Breakdown</a></li>
               </ul>
             </li>

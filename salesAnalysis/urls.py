@@ -19,9 +19,14 @@ from django.views.generic import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
 
+admin.site.site_header = ' FFARA System'
+admin.site.index_title = 'Farm Financial Analysis And Risk Assesment System Admin'
+admin.site.site_title = 'FFARAS System'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include("sales.urls")),
+    path('accounts/', include("django.contrib.auth.urls")),
     
     
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
