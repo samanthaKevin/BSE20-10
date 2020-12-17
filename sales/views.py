@@ -312,34 +312,34 @@ def predict(request):
 def index(request):
     df = read_frame(Income.objects.all())
     dfData = read_frame(Income.objects.all().filter(Year = 2020))
-    dfData["Sales"] = dfData['Revenue'].round(2)
-    df["Sales"] = df['Revenue'].round(2)
+    dfData["Income"] = dfData['Revenue'].round(2)
+    df["Income"] = df['Revenue'].round(2)
 
     df['Months'] = pd.to_datetime(df['ReceivedDate']).dt.month_name()
     df['Years'] = df['Year']
 
-    rs_bar = df.groupby("Years")["Sales"].agg("sum")
+    rs_bar = df.groupby("Years")["Income"].agg("sum")
     categoriesbar = list(rs_bar.index)
     valuesbar = list(rs_bar.values)
     
-    #Overall Sales total
-    total_sum = df['Sales'].sum()
+    #Overall Income total
+    total_sum = df['Income'].sum()
     total_sum = '{:,}'.format(total_sum)
     
-    #Average Sales total
+    #Average Income total
     try:
-        total_average = (df['Sales'].mean()).round(2)
+        total_average = (df['Income'].mean()).round(2)
     except Exception as e:
         total_average = 0
     total_average = '{:,}'.format(total_average)
     
     #Highest Sales
-    current_sales = dfData["Sales"].to_numpy()
+    current_sales = dfData["Income"].to_numpy()
     if current_sales.size == 0:
         current_sales = 0
     else:
         current_sales = current_sales[0]
-    highest_sales = df['Sales'].max()
+    highest_sales = df['Income'].max()
     highest_sales = '{:,}'.format(highest_sales)
     
     
