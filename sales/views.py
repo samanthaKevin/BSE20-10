@@ -397,16 +397,16 @@ def salesreport(request):
 @login_required(login_url='admin/login/?next=/')
 def expensereport(request):
     df = read_frame(Expenses.objects.all())
-    df["Sales"] = df['TotalCost'].round(2)
+    df["Expenses"] = df['TotalCost'].round(2)
 
     # df['Months'] = pd.to_datetime(df['ReceivedDate']).dt.month_name()
     df['Years'] = df['Year']
-    rs = df.groupby("Years")["Sales"].agg("sum")
+    rs = df.groupby("Years")["Expenses"].agg("sum")
     # print(rs)
 
     categoriesx = list(rs.index)
     valuesx = list(rs.values)
-    expensedf = df[["Sales","Years"]]
+    expensedf = df[["Expenses","Years"]]
     table_content = expensedf.to_html(index=None, table_id='tableExport')
     table_content = table_content.replace("", "")
     table_content = table_content.replace('class="dataframe"', "class='table table-striped'")

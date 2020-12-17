@@ -195,7 +195,7 @@
               <ul class="dropdown-menu">
                 <!-- <li><a class="nav-link" href="/">Yearly Breakdown</a></li> -->
                 <li><a class="nav-link" href="{% url 'salesreport' %}">Monthly Income Report</a></li>
-                <li><a class="nav-link" href="{% url 'expensereport' %}">Expenses Report></li>
+                <li><a class="nav-link" href="{% url 'expensereport' %}">Expenses Report</a></li>
               </ul>
             </li>
             <li class="menu-header">Forecasts</li>
@@ -432,7 +432,7 @@
         
         Highcharts.chart('linechart2', {
         chart: {
-                type: 'datetime'
+                type: 'column'
         },
         title: {
                 text: ' Farm Expenses By Yearss '
@@ -496,7 +496,7 @@
                   }
               },
         series: [{
-                type: 'line',
+                type: 'column',
                 colorByPoint: true,
                 showInLegend: true,
                 name: 'Total Expenses',
