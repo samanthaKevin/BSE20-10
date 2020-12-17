@@ -1,0 +1,21 @@
+Name,Quantity,Unit Cost,Total Cost,Expense group,Year
+Hoes ,4,10000,40000,Fixed costs ,2018
+Pangas,4,8000,32000,Fixed costs ,2018
+Spray pump,1,150000,150000,Fixed costs ,2018
+Seedlings ,450,500,225000,Fixed costs ,2018
+Slasher ,1,8000,8000,Fixed costs ,2018
+Pititng ,450,500,225000,Fixed costs ,2018
+Planting (man days),4,5000,20000,Fixed costs ,2018
+DAP fertiliser (bag),1,150000,150000,Fixed costs ,2018
+String for lining,1,4000,4000,Fixed costs ,2018
+secateur ,2,20000,40000,Fixed costs ,2018
+Prunning saw,1,15000,15000,Fixed costs ,2018
+1st ploughing ,1,250000,250000,Fixed costs ,2018
+2nd ploughing ,1,200000,200000,Fixed costs ,2018
+Planting,1,500000,500000,Fixed costs ,2018
+Weeding ,40,5000,200000,Variable Cost,2018
+Weeding ,40,5000,200000,Variable Cost,2019
+NPK fertiliser (Bags),3,150000,450000,Variable Cost,2019
+Labour for applying NPK,6,5000,30000,Variable Cost,2019
+Soil and Water conservation structures (contracted),1,200000,200000,Variable Cost,2019
+Full time labourer (monthly pay),12,50000,600000,Variable Cost,2019
