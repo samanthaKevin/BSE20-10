@@ -180,7 +180,7 @@
       <div class="main-sidebar sidebar-style-2">
         <aside id="sidebar-wrapper">
           <div class="sidebar-brand">
-            <a href="index.html"> <img alt="image" src="{% static 'assets/img/logo.png'%}" class="header-logo" /> <span
+            <a href="/"> <img alt="image" src="{% static 'assets/img/logo.png'%}" class="header-logo" /> <span
                 class="logo-name">FFARAS</span>
             </a>
           </div>
@@ -193,8 +193,9 @@
               <a href="#" class="menu-toggle nav-link has-dropdown"><i
                   data-feather="briefcase"></i><span>Sales Analysis</span></a>
               <ul class="dropdown-menu">
-                <li><a class="nav-link" href="/">Yearly Breakdown</a></li>
-                <li><a class="nav-link" href="{% url 'salesreport' %}">Monthly Breakdown</a></li>
+                <!-- <li><a class="nav-link" href="/">Yearly Breakdown</a></li> -->
+                <li><a class="nav-link" href="{% url 'salesreport' %}">Monthly Income Report</a></li>
+                <li><a class="nav-link" href="{% url 'expensereport' %}">Expenses Report></li>
               </ul>
             </li>
             <li class="menu-header">Forecasts</li>
@@ -258,7 +259,7 @@
   <script src="https://code.highcharts.com/modules/export-data.js"></script>
 
 
-      <!--BarChart-->
+      <!--Income BarChart-->
       <script>  
         _categoriesbar = {{categoriesbar|safe}};
         _valuesbar = {{valuesbar|safe}};
@@ -268,7 +269,7 @@
                 type: 'datetime'
         },
         title: {
-                text: 'Farm Sales Per Year'
+                text: 'Farm Income Per Year'
         },
         subtitle:{
           text: ''
@@ -340,7 +341,7 @@
     </script>
 
 
-      <!--lineChart-->
+      <!--Income lineChart-->
       <script> 
         _categories = {{categories|safe}};
         _values = {{values|safe}};
@@ -350,7 +351,7 @@
                 type: 'datetime'
         },
         title: {
-                text: ' Farm Total Sales By Months '
+                text: ' Farm Total Income By Months '
         },
         subtitle :{
                 text: 'Across All Years'
@@ -365,7 +366,7 @@
         yAxis: {
                 min: 0,
                 title: {
-                 text: 'Sales in Ug Shillings'
+                 text: 'Income in Ug Shillings'
                 }
         },
         tooltip: {
@@ -421,6 +422,89 @@
         });
         </script> 
 
+
+
+
+<!--Expense lineChart-->
+      <script> 
+        _categories = {{categoriesx|safe}};
+        _values = {{valuesx|safe}};
+        
+        Highcharts.chart('linechart2', {
+        chart: {
+                type: 'datetime'
+        },
+        title: {
+                text: ' Farm Expenses By Yearss '
+        },
+        subtitle :{
+                text: 'Across All Years'
+        },
+        xAxis: {
+                categories:_categories,
+                crosshair: true,
+                title: {
+                      text: 'Time Period [Year]'
+                }
+        },
+        yAxis: {
+                min: 0,
+                title: {
+                 text: 'Expenses in Ug Shillings'
+                }
+        },
+        tooltip: {
+                headerFormat: '<span style="font-size:10px">Month: <b>{point.key}</b></span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">Total Sales: </td>' +
+            '<td style="padding:0"><b>{point.y} Ug Shillings</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+        },
+      plotOptions: {
+                  line: {
+                      fillColor: {
+                          linearGradient: {
+                              x1: 0,
+                              y1: 0,
+                              x2: 0,
+                              y2: 1
+                          },
+                          stops: [
+                              [0, Highcharts.getOptions().colors[0]],
+                              [1, Highcharts.color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgb(0,255,0)')]
+                          ]
+                      },
+                      dataLabels: {
+                       formatter: function() {
+                            var sliceIndex = this.point.index;
+                            var sliceName = this.series.chart.axes[0].categories[sliceIndex];
+                            this.point.name = sliceName;
+                            return sliceName
+          }
+                      },
+                      marker: {
+                          radius: 5
+                      },
+                      lineWidth: 3,
+                      states: {
+                          hover: {
+                              lineWidth: 3
+                          }
+                      },
+                      threshold: null
+                  }
+              },
+        series: [{
+                type: 'line',
+                colorByPoint: true,
+                showInLegend: true,
+                name: 'Total Expenses',
+                data: _values,
+            
+        }]
+        });
+        </script> 
 
 
       

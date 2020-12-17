@@ -393,3 +393,29 @@ def salesreport(request):
     }
     return render(request, 'sales_table.html', context)  
     
+
+@login_required(login_url='admin/login/?next=/')
+def expensereport(request):
+    df = read_frame(Expenses.objects.all())
+    df["Sales"] = df['TotalCost'].round(2)
+
+    # df['Months'] = pd.to_datetime(df['ReceivedDate']).dt.month_name()
+    df['Years'] = df['Year']
+    rs = df.groupby("Years")["Sales"].agg("sum")
+    # print(rs)
+
+    categoriesx = list(rs.index)
+    valuesx = list(rs.values)
+    expensedf = df[["Sales","Years"]]
+    table_content = expensedf.to_html(index=None, table_id='tableExport')
+    table_content = table_content.replace("", "")
+    table_content = table_content.replace('class="dataframe"', "class='table table-striped'")
+    table_content = table_content.replace('border="1"', "")
+    
+    context = {
+        'table_data': table_content,
+        "categories": categoriesx,
+        'values': valuesx,
+    }
+    return render(request, 'expensereport.html', context)  
+    
