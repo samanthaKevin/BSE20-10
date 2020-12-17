@@ -75,9 +75,9 @@ def riskassessment(request):
             prediction = 0
         
         dfData['PredictedPrices'] = prediction
-        dfData['PredictedPrices'] = dfData['PredictedPrices'].round(1)
+        dfData['PredictedPrices'] = dfData['PredictedPrices'].round(2)
         dfData['Income'] = 450 * dfData['PredictedPrices']
-        dfData['Income'] = dfData['Income'].round(1)
+        dfData['Income'] = dfData['Income'].round(2)
         dfData['Profit'] = dfData['Income'] - dfData['TotalCost']
         dfData['PredYear'] = request.POST.get('Year')
         dfData['Type'] = request.POST.get('Type')
@@ -97,6 +97,7 @@ def importExpenseCSV(request):
         mycsv = request.FILES["fileToUpload"]
         url = ""
         fs = FileSystemStorage()
+        sid = transaction.savepoint()
         try:
             if mycsv.name == "":
                 raise Exception("No filename") 
@@ -120,7 +121,7 @@ def importExpenseCSV(request):
 
                 #models.SaveExpense(df.values)
                 arr = df.values
-                sid = transaction.savepoint()
+                
                 for i in range(len(arr)) : 
                     mydata = Expenses.objects.all().filter(Year = arr[i,5])
                     origTotalCost = 0
@@ -250,7 +251,7 @@ def predictPrice(request):
     regressor.fit(X,Y)
 
     prediction = regressor.predict(data_unseen)
-    prediction = np.round_(prediction, 1)
+    prediction = np.round_(prediction, 2)
     context = {
         'pred': 'Expected Market Price in UGX per Kg will be {:,}'.format(prediction[0]),
     }
@@ -297,7 +298,7 @@ def predict(request):
 @login_required(login_url='admin/login/?next=/')
 def index(request):
     df = read_frame(Income.objects.all())
-    df["Sales"] = df['Revenue'].round(1)
+    df["Sales"] = df['Revenue'].round(2)
 
     df['Months'] = pd.to_datetime(df['ReceivedDate']).dt.month_name()
     df['Years'] = df['Year']
@@ -311,7 +312,7 @@ def index(request):
     total_sum = '{:,}'.format(total_sum)
     
     #Average Sales total
-    total_average = (df['Sales'].mean()).round(1)
+    total_average = (df['Sales'].mean()).round(2)
     total_average = '{:,}'.format(total_average)
     
     #Highest Sales
@@ -346,7 +347,7 @@ def index(request):
 @login_required(login_url='admin/login/?next=/')
 def salesreport(request):
     df = read_frame(Income.objects.all())
-    df["Sales"] = df['Revenue']
+    df["Sales"] = df['Revenue'].round(2)
 
     df['Months'] = pd.to_datetime(df['ReceivedDate']).dt.month_name()
     df['Years'] = df['Year']
@@ -355,8 +356,8 @@ def salesreport(request):
 
     categories = list(rs.index)
     values = list(rs.values)
-    
-    table_content = df.to_html(index=None, table_id='tableExport')
+    salesdf = df[["Sales","Months","Years"]]
+    table_content = salesdf.to_html(index=None, table_id='tableExport')
     table_content = table_content.replace("", "")
     table_content = table_content.replace('class="dataframe"', "class='table table-striped'")
     table_content = table_content.replace('border="1"', "")
