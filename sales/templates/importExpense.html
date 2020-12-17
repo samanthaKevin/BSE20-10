@@ -20,14 +20,15 @@
                                     <input name="fileToUpload" type ='file'>
                                     </input><br><br>
                     
-                                    <button type="submit" class="btn btn-primary">Load Data</button>
+                                    <button type="submit" class="btn btn-primary">Import Data</button>
                                     <p style="color: red">{{error}}</p>
                                 </form>
                               </div>
 
                               <div class="card-body">
+                                <p>Format columns in file as below</p>
                                 <div class="table-responsive">
-                                    <form action="/importExpense" method="POST">
+                                    <!--<form action="/importExpense" method="POST">-->
                                     
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
@@ -44,8 +45,8 @@
                                             
                                         </tbody>
                                     </table>
-                                    <button type="submit" class="btn btn-primary" style="float: right">Import Data</button>
-                                </form>
+                                    <!--<button type="submit" class="btn btn-primary" style="float: right">Import Data</button>-->
+                                <!--</form>-->
                                 </div>
 
                           </div>

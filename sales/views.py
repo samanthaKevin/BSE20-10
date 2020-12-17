@@ -95,7 +95,13 @@ def riskassessment(request):
 def importExpenseCSV(request):
     if request.method == "POST":
         sid = transaction.savepoint()
-        mycsv = request.FILES["fileToUpload"]
+        try:
+            mycsv = request.FILES["fileToUpload"]
+        except Exception as e:
+            context = {
+                'error': "No file provided",
+            }
+            return render(request, 'importExpense.html', context)
         url = ""
         fs = FileSystemStorage()
         try:
@@ -167,7 +173,14 @@ def importExpenseCSV(request):
 def importIncomeCSV(request):
     if request.method == "POST":
         sid = transaction.savepoint()
-        mycsv = request.FILES["fileToUpload"]
+        try:
+            mycsv = request.FILES["fileToUpload"]
+        except Exception as e:
+            context = {
+                'error': "No file provided",
+            }
+            return render(request, 'importIncome.html', context)
+        
         url = ""
         fs = FileSystemStorage()
         try:
