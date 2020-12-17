@@ -371,16 +371,16 @@ def index(request):
 @login_required(login_url='admin/login/?next=/')
 def salesreport(request):
     df = read_frame(Income.objects.all())
-    df["Sales"] = df['Revenue'].round(2)
+    df["Income"] = df['Revenue'].round(2)
 
     df['Months'] = pd.to_datetime(df['ReceivedDate']).dt.month_name()
     df['Years'] = df['Year']
-    rs = df.groupby("Months")["Sales"].agg("sum")
+    rs = df.groupby("Months")["Income"].agg("sum")
     # print(rs)
 
     categories = list(rs.index)
     values = list(rs.values)
-    salesdf = df[["Sales","Months","Years"]]
+    salesdf = df[["Income","Months","Years"]]
     table_content = salesdf.to_html(index=None, table_id='tableExport')
     table_content = table_content.replace("", "")
     table_content = table_content.replace('class="dataframe"', "class='table table-striped'")
