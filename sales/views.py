@@ -94,10 +94,10 @@ def riskassessment(request):
 @login_required(login_url='admin/login/?next=/')
 def importExpenseCSV(request):
     if request.method == "POST":
+        sid = transaction.savepoint()
         mycsv = request.FILES["fileToUpload"]
         url = ""
         fs = FileSystemStorage()
-        sid = transaction.savepoint()
         try:
             if mycsv.name == "":
                 raise Exception("No filename") 
@@ -166,10 +166,10 @@ def importExpenseCSV(request):
 @login_required(login_url='admin/login/?next=/')
 def importIncomeCSV(request):
     if request.method == "POST":
+        sid = transaction.savepoint()
         mycsv = request.FILES["fileToUpload"]
         url = ""
         fs = FileSystemStorage()
-        sid = transaction.savepoint()
         try:
             if mycsv.name == "":
                 raise Exception("No filename") 
