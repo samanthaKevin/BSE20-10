@@ -427,12 +427,12 @@
 
 <!--Expense lineChart-->
       <script> 
-        _categories = {{categoriesx|safe}};
-        _values = {{valuesx|safe}};
+        _categoriesx = {{categoriesx|safe}};
+        _valuesx = {{valuesx|safe}};
         
-        Highcharts.chart('linechart2', {
+        Highcharts.chart('column1', {
         chart: {
-                type: 'column'
+                type: 'datetime'
         },
         title: {
                 text: ' Farm Expenses By Yearss '
@@ -441,7 +441,7 @@
                 text: 'Across All Years'
         },
         xAxis: {
-                categories:_categories,
+                categories:_categoriesx,
                 crosshair: true,
                 title: {
                       text: 'Time Period [Year]'
@@ -500,7 +500,7 @@
                 colorByPoint: true,
                 showInLegend: true,
                 name: 'Total Expenses',
-                data: _values,
+                data: _valuesx,
             
         }]
         });

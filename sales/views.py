@@ -414,8 +414,8 @@ def expensereport(request):
     
     context = {
         'table_data': table_content,
-        "categories": categoriesx,
-        'values': valuesx,
+        "categoriesx": categoriesx,
+        'valuesx': valuesx,
     }
     return render(request, 'expensereport.html', context)  
     
