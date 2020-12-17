@@ -311,6 +311,8 @@ def predict(request):
 @login_required(login_url='admin/login/?next=/')
 def index(request):
     df = read_frame(Income.objects.all())
+    dfData = read_frame(Income.objects.all().filter(Year = 2020))
+    dfData["Sales"] = dfData['Revenue'].round(2)
     df["Sales"] = df['Revenue'].round(2)
 
     df['Months'] = pd.to_datetime(df['ReceivedDate']).dt.month_name()
@@ -325,10 +327,18 @@ def index(request):
     total_sum = '{:,}'.format(total_sum)
     
     #Average Sales total
-    total_average = (df['Sales'].mean()).round(2)
+    try:
+        total_average = (df['Sales'].mean()).round(2)
+    except Exception as e:
+        total_average = 0
     total_average = '{:,}'.format(total_average)
     
     #Highest Sales
+    current_sales = dfData["Sales"].to_numpy()
+    if current_sales.size == 0:
+        current_sales = 0
+    else:
+        current_sales = current_sales[0]
     highest_sales = df['Sales'].max()
     highest_sales = '{:,}'.format(highest_sales)
     
@@ -353,6 +363,7 @@ def index(request):
         'total_average': total_average,
         'highest_sales': highest_sales,
         'year_table': year_table,
+        'current_sales': current_sales,
     }
     return render(request,'sales/dashboard.html', context)
 
